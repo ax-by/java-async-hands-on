@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>dev.cfhandson</groupId>
+        <artifactId>cf-handson-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>m11-capstone</artifactId>
+
+    <dependencies>
+        <dependency>
+            <groupId>dev.cfhandson</groupId>
+            <artifactId>harness</artifactId>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <!--
+            졸업 채점. 평소 `mvn test` 는 스켈레톤만 컴파일한다(도구 피드백 없이 작성하기 위해).
+            채점 테스트(src/grading/java)는 `-Pgrade` 를 줄 때만 컴파일·실행된다.
+              mvn -pl m11-capstone -am verify -Pgrade
+        -->
+        <profile>
+            <id>grade</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>add-grading-tests</id>
+                                <phase>generate-test-sources</phase>
+                                <goals>
+                                    <goal>add-test-source</goal>
+                                </goals>
+                                <configuration>
+                                    <sources>
+                                        <source>src/grading/java</source>
+                                    </sources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

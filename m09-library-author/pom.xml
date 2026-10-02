@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>dev.cfhandson</groupId>
+        <artifactId>cf-handson-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>m09-library-author</artifactId>
+
+    <properties>
+        <!-- 이 모듈은 테스트 쪽에도 해답이 있다(예측 시트, 정답을 단언하는 사실 검증 테스트) -->
+        <solutions.test.source.dir>solutions/src/test/java</solutions.test.source.dir>
+    </properties>
+
+    <dependencies>
+        <!--
+            main 은 Java 8 사용자를 지원하는 "라이브러리"다. harness 는 release 17 로 컴파일되어 있으므로
+            main 에서는 쓸 수 없다. 테스트(release 17)에서만 쓴다.
+        -->
+        <dependency>
+            <groupId>dev.cfhandson</groupId>
+            <artifactId>harness</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- main: Java 8 API 만 허용 (Java 9+ API 를 쓰면 컴파일 에러). JDK 25 javac 는 obsolete 경고만 낸다 -->
+                    <release>8</release>
+                    <!-- test: harness(release 17)와 Java 9+ API 비교 실험을 쓴다 -->
+                    <testRelease>17</testRelease>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

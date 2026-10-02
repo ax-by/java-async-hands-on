@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>dev.cfhandson</groupId>
+        <artifactId>cf-handson-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>m10-oss-reading</artifactId>
+
+    <!--
+      읽기 대상 OSS 버전을 고정한다. guides/*.md 의 "파일:줄" 참조는 모두 이 버전의 sources jar 기준이다.
+      버전을 바꾸면 줄 번호가 어긋난다.
+    -->
+    <properties>
+        <caffeine.version>3.2.4</caffeine.version>
+        <kafka.version>4.3.1</kafka.version>
+        <netty.version>4.2.15.Final</netty.version>
+        <lettuce.version>7.5.2.RELEASE</lettuce.version>
+        <awssdk.version>2.55.10</awssdk.version>
+        <cassandra-driver.version>4.19.3</cassandra-driver.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Lettuce(4.2), AWS SDK(4.1), Cassandra 드라이버(4.1)가 서로 다른 Netty를 원하므로 하나로 맞춘다 -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-bom</artifactId>
+                <version>${netty.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>dev.cfhandson</groupId>
+            <artifactId>harness</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>${lettuce.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>dynamodb</artifactId>
+            <version>${awssdk.version}</version>
+            <exclusions>
+                <!-- 비동기 클라이언트만 쓴다. 동기 HTTP 클라이언트는 필요 없다 -->
+                <exclusion>
+                    <groupId>software.amazon.awssdk</groupId>
+                    <artifactId>apache-client</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>software.amazon.awssdk</groupId>
+                    <artifactId>apache5-client</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>netty-nio-client</artifactId>
+            <version>${awssdk.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cassandra</groupId>
+            <artifactId>java-driver-core</artifactId>
+            <version>${cassandra-driver.version}</version>
+        </dependency>
+
+        <!-- Kafka/AWS/Netty 의 연결 실패 로그가 테스트 출력을 덮지 않도록 SLF4J 를 조용히 바인딩한다 -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-nop</artifactId>
+            <version>1.7.36</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>
